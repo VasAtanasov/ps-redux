@@ -1,0 +1,1 @@
+yarn add -D cross-env json-server npm-run-all
