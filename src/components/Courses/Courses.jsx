@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import * as courseActions from '../../actions/courseActions';
 import * as authorActions from '../../actions/authorActions';
@@ -6,8 +6,10 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import CourseList from './CourseList';
 
-const Courses = ({ courses, authors, actions }) => {
-    useEffect(() => {
+class Courses extends React.Component {
+    componentDidMount() {
+        const { courses, authors, actions } = this.props;
+
         if (courses.length === 0) {
             actions.loadCourses().catch(error => {
                 alert('Loading courses failed' + error);
@@ -19,15 +21,17 @@ const Courses = ({ courses, authors, actions }) => {
                 alert('Loading authors failed' + error);
             });
         }
-    }, [courses, authors, actions]);
+    }
 
-    return (
-        <React.Fragment>
-            <h2>Courses</h2>
-            <CourseList courses={courses} />
-        </React.Fragment>
-    );
-};
+    render() {
+        return (
+            <>
+                <h2>Courses</h2>
+                <CourseList courses={this.props.courses} />
+            </>
+        );
+    }
+}
 
 Courses.propTypes = {
     authors: PropTypes.array.isRequired,
