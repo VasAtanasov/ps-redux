@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-export default function courseReducer(state = [], action) {
+const courseReducer = (state = [], action) => {
     const { type } = action;
 
     const reducer = {
@@ -8,4 +8,6 @@ export default function courseReducer(state = [], action) {
     };
 
     return reducer[type] || state;
-}
+};
+
+export default courseReducer;
