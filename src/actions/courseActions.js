@@ -10,7 +10,7 @@ export const loadCourseSuccess = courses => {
 };
 
 export const loadCourses = () => {
-    return function(dispatch) {
+    return dispatch => {
         return courseApi
             .getCourses()
             .then(courses => {
