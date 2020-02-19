@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import * as courseActions from '../../actions/courseActions';
 import * as authorActions from '../../actions/authorActions';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import CourseList from './CourseList';
+import { Redirect } from 'react-router-dom';
+import Spinner from '../common/Spinner';
 
 class Courses extends React.Component {
+    state = {
+        redirectToAddCoursePage: false
+    };
+
     componentDidMount() {
         const { courses, authors, actions } = this.props;
 
@@ -25,10 +31,28 @@ class Courses extends React.Component {
 
     render() {
         return (
-            <>
+            <Fragment>
+                {this.state.redirectToAddCoursePage && (
+                    <Redirect to="/course" />
+                )}
                 <h2>Courses</h2>
-                <CourseList courses={this.props.courses} />
-            </>
+                {this.props.loading ? (
+                    <Spinner />
+                ) : (
+                    <Fragment>
+                        <button
+                            style={{ marginBottom: 20 }}
+                            className="btn btn-primary add-course"
+                            onClick={() =>
+                                this.setState({ redirectToAddCoursePage: true })
+                            }
+                        >
+                            Add Course
+                        </button>
+                        <CourseList courses={this.props.courses} />
+                    </Fragment>
+                )}
+            </Fragment>
         );
     }
 }
@@ -36,23 +60,25 @@ class Courses extends React.Component {
 Courses.propTypes = {
     authors: PropTypes.array.isRequired,
     courses: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(state) {
+function mapStateToProps({ courses, authors, apiCallsInProgress }) {
     return {
         courses:
-            state.authors.length === 0
+            authors.length === 0
                 ? []
-                : state.courses.map(course => {
+                : courses.map(course => {
                       return {
                           ...course,
-                          authorName: state.authors.find(
+                          authorName: authors.find(
                               a => a.id === course.authorId
                           ).name
                       };
                   }),
-        authors: state.authors
+        authors: authors,
+        loading: apiCallsInProgress > 0
     };
 }
 
